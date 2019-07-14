@@ -20,7 +20,13 @@ import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.PhoneAuthCredential;
 import com.google.firebase.auth.PhoneAuthProvider;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 public class Main2Activity extends AppCompatActivity {
@@ -37,11 +43,16 @@ public class Main2Activity extends AppCompatActivity {
     //  public User user;
 
     FirebaseAuth mAuth;
+    DatabaseReference rootReference, childReference;
+    FirebaseDatabase firebaseDatabase;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main2);
+
+        firebaseDatabase = FirebaseDatabase.getInstance();
+        rootReference = firebaseDatabase.getReference();
 
         mAuth = FirebaseAuth.getInstance();
         pNum = findViewById(R.id.Phone);
@@ -143,13 +154,26 @@ public class Main2Activity extends AppCompatActivity {
                             // Sign in success, update UI with the signed-in user's information
                             Log.d("TAG", "signInWithCredential:success");
 
-                            Toast.makeText(Main2Activity.this, "Sign in successful", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(Main2Activity.this, "Check in successful", Toast.LENGTH_SHORT).show();
 
-                           // FirebaseUser user = task.getResult().getUser();
+//                            User user = new User()
+                            Visit visit = new Visit(e_meet.getText().toString(), e_pur.getText().toString(), Calendar.getInstance().getTime().toString());
+                            ArrayList<Visit> visits = new ArrayList<>();
+                            visits.add(visit);
+                            User user = new User(e_name.getText().toString(), e_add.getText().toString(),phoneNumber, visits);
+
+                            Map<String, Object> newUser = new HashMap<>();
+
+//                            FirebaseUser userf = task.getResult().getUser();
 
                            // user.PhoneNum = phoneNumber;
 
-                            //rootRef.child(mAuth.getCurrentUser().getUid());
+                            childReference = rootReference.child(mAuth.getCurrentUser().getUid());
+                            newUser.put("user", user);
+                            newUser.put("phone", user.phoneNum);
+                            childReference.updateChildren(newUser);
+
+//                            mAuth.signOut();
 
                             //Intent newIntent = new Intent(.this,ReferralActivity.class);
                             //newIntent.putExtra("user", user);
