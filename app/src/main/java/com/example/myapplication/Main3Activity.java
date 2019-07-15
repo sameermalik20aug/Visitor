@@ -32,6 +32,7 @@ public class Main3Activity extends AppCompatActivity {
     String PhoneNum;
     String ls;
     ArrayList<Visit> vis;
+    boolean fghh = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -122,7 +123,14 @@ public class Main3Activity extends AppCompatActivity {
 //                    });
 //                    int x = Integer.parseInt(ls)+1;
 //                    ch = ch.child(""+x);
-                    ch1.push().setValue(visit);
+                    if(fghh){
+                        Toast.makeText(Main3Activity.this, "Try Again", Toast.LENGTH_SHORT).show();
+                        fghh = false;
+                    }else{
+                        ch1.push().setValue(visit);
+                        Toast.makeText(Main3Activity.this, "Check In Successful", Toast.LENGTH_SHORT).show();
+                        fghh = true;
+                    }
                 }
             }
         });
